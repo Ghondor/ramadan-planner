@@ -191,7 +191,8 @@
     "summaryHabits": "Habits",
     "beginRamadan": "Begin Ramadan!",
     "creating": "Creating...",
-    "somethingWrong": "Something went wrong"
+    "somethingWrong": "Something went wrong",
+    "searchCity": "Search for a city..."
   },
   "auth": {
     "login": "Login",

@@ -13,7 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { CitySearch } from "@/components/city-search";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -47,9 +47,9 @@ export default function OnboardingPage() {
   const [error, setError] = useState<string | null>(null);
 
   // Step 1: Location & settings
-  const [locationName, setLocationName] = useState("Hamburg");
-  const [lat, setLat] = useState("53.5511");
-  const [lng, setLng] = useState("9.9937");
+  const [locationName, setLocationName] = useState("");
+  const [lat, setLat] = useState("");
+  const [lng, setLng] = useState("");
   const [yearHijri, setYearHijri] = useState("1447");
   const [madhab, setMadhab] = useState<Madhab>("hanafi");
 
@@ -163,35 +163,22 @@ export default function OnboardingPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-2">
-                <Label htmlFor="location">{t("city")}</Label>
-                <Input
-                  id="location"
+                <Label>{t("city")}</Label>
+                <CitySearch
                   value={locationName}
-                  onChange={(e) => setLocationName(e.target.value)}
-                  placeholder="Hamburg"
+                  onSelect={(city, newLat, newLng) => {
+                    setLocationName(city);
+                    setLat(newLat);
+                    setLng(newLng);
+                  }}
+                  placeholder={t("searchCity")}
                 />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="grid gap-2">
-                  <Label htmlFor="lat">{t("latitude")}</Label>
-                  <Input
-                    id="lat"
-                    type="number"
-                    step="0.0001"
-                    value={lat}
-                    onChange={(e) => setLat(e.target.value)}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="lng">{t("longitude")}</Label>
-                  <Input
-                    id="lng"
-                    type="number"
-                    step="0.0001"
-                    value={lng}
-                    onChange={(e) => setLng(e.target.value)}
-                  />
-                </div>
+                {lat && lng && (
+                  <p className="text-xs text-muted-foreground flex items-center gap-1">
+                    <MapPin className="h-3 w-3" />
+                    {locationName} ({parseFloat(lat).toFixed(2)}°, {parseFloat(lng).toFixed(2)}°)
+                  </p>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label>{t("hijriYear")}</Label>
@@ -227,6 +214,7 @@ export default function OnboardingPage() {
                 onClick={() => setStep(2)}
                 className="w-full"
                 size="lg"
+                disabled={!lat || !lng}
               >
                 {tc("continue")}
                 <ChevronRight className="h-4 w-4 ml-2" />

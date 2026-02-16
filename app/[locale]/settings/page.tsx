@@ -13,6 +13,7 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { CitySearch } from "@/components/city-search";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -195,27 +196,21 @@ export default function SettingsPage() {
               <MapPin className="h-3 w-3" />
               {t("location")}
             </Label>
-            <Input
+            <CitySearch
               value={locationName}
-              onChange={(e) => setLocationName(e.target.value)}
+              onSelect={(city, newLat, newLng) => {
+                setLocationName(city);
+                setLat(newLat);
+                setLng(newLng);
+              }}
               placeholder={t("cityName")}
             />
-            <div className="grid grid-cols-2 gap-2">
-              <Input
-                type="number"
-                step="0.0001"
-                value={lat}
-                onChange={(e) => setLat(e.target.value)}
-                placeholder={t("latitude")}
-              />
-              <Input
-                type="number"
-                step="0.0001"
-                value={lng}
-                onChange={(e) => setLng(e.target.value)}
-                placeholder={t("longitude")}
-              />
-            </div>
+            {lat && lng && (
+              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <MapPin className="h-3 w-3" />
+                {locationName} ({parseFloat(lat).toFixed(2)}°, {parseFloat(lng).toFixed(2)}°)
+              </p>
+            )}
           </div>
 
           {/* Madhab */}

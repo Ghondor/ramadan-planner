@@ -191,7 +191,8 @@
     "summaryHabits": "Навики",
     "beginRamadan": "Започни Рамазан!",
     "creating": "Се креира...",
-    "somethingWrong": "Нешто тргна наопаку"
+    "somethingWrong": "Нешто тргна наопаку",
+    "searchCity": "Пребарај град..."
   },
   "auth": {
     "login": "Најава",

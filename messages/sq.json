@@ -191,7 +191,8 @@
     "summaryHabits": "Zakonet",
     "beginRamadan": "Fillo Ramazanin!",
     "creating": "Duke krijuar...",
-    "somethingWrong": "Diçka shkoi keq"
+    "somethingWrong": "Diçka shkoi keq",
+    "searchCity": "Kërko një qytet..."
   },
   "auth": {
     "login": "Hyr",

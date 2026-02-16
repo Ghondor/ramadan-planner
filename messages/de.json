@@ -191,7 +191,8 @@
     "summaryHabits": "Gewohnheiten",
     "beginRamadan": "Ramadan beginnen!",
     "creating": "Wird erstellt...",
-    "somethingWrong": "Etwas ist schiefgelaufen"
+    "somethingWrong": "Etwas ist schiefgelaufen",
+    "searchCity": "Stadt suchen..."
   },
   "auth": {
     "login": "Anmelden",
