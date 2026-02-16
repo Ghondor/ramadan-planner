@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { useCurrentPlanner } from "@/lib/hooks/use-planner";
 import { useAllProgress } from "@/lib/hooks/use-daily-progress";
 import { useMode } from "@/lib/context/mode-context";
@@ -27,6 +28,8 @@ import {
 } from "lucide-react";
 
 export default function GoalsPage() {
+  const t = useTranslations("goals");
+  const tc = useTranslations("common");
   const { mode } = useMode();
   const { data: planner, isLoading } = useCurrentPlanner();
   const { data: allProgress } = useAllProgress(planner?.id ?? null);
@@ -96,10 +99,10 @@ export default function GoalsPage() {
     return (
       <div className="p-4 max-w-lg mx-auto text-center space-y-4 pt-20">
         <Moon className="h-12 w-12 mx-auto text-muted-foreground" />
-        <h2 className="text-xl font-bold">No Planner Yet</h2>
-        <p className="text-muted-foreground">Set up your planner first</p>
+        <h2 className="text-xl font-bold">{tc("noPlanner")}</h2>
+        <p className="text-muted-foreground">{t("noPlanner")}</p>
         <Button asChild>
-          <Link href="/onboarding">Set Up Planner</Link>
+          <Link href="/onboarding">{tc("setupPlanner")}</Link>
         </Button>
       </div>
     );
@@ -109,7 +112,7 @@ export default function GoalsPage() {
     <div className="p-4 space-y-4 max-w-lg mx-auto">
       <h1 className="text-xl font-bold flex items-center gap-2">
         <Target className="h-5 w-5" />
-        Goals & Habits
+        {t("title")}
       </h1>
 
       {/* Quran Goal */}
@@ -117,13 +120,13 @@ export default function GoalsPage() {
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             <BookOpen className="h-4 w-4" />
-            Quran Reading Goal
+            {t("quranGoal")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex justify-between text-sm">
-            <span>Daily target</span>
-            <span className="font-bold">{quranGoal} pages/day</span>
+            <span>{t("dailyTarget")}</span>
+            <span className="font-bold">{tc("pagesPerDay", { count: quranGoal })}</span>
           </div>
           <Slider
             value={[quranGoal]}
@@ -134,8 +137,8 @@ export default function GoalsPage() {
           />
           <p className="text-xs text-muted-foreground">
             {quranGoal >= 20
-              ? "You'll complete the Quran in Ramadan!"
-              : `${quranGoal * 30} pages in 30 days (~${Math.ceil(604 / quranGoal)} days to finish)`}
+              ? t("completeQuran")
+              : t("pagesIn30Days", { pages: quranGoal * 30, days: Math.ceil(604 / quranGoal) })}
           </p>
 
           <Separator />
@@ -143,7 +146,7 @@ export default function GoalsPage() {
           {/* Progress comparison */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span>Total pages read</span>
+              <span>{t("totalPagesRead")}</span>
               <span className="font-medium">
                 {totalQuranPages} / {quranTarget}
               </span>
@@ -153,10 +156,10 @@ export default function GoalsPage() {
               className="h-2"
             />
             <p className="text-xs text-muted-foreground">
-              Avg: {avgQuranPages} pages/day
+              {t("avgPages", { count: avgQuranPages })}
               {avgQuranPages >= quranGoal
-                ? " — On track!"
-                : " — Keep pushing!"}
+                ? t("onTrack")
+                : t("keepPushing")}
             </p>
           </div>
         </CardContent>
@@ -165,7 +168,7 @@ export default function GoalsPage() {
       {/* Habits */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Daily Habits</CardTitle>
+          <CardTitle className="text-base">{t("dailyHabits")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {habits.length > 0 ? (
@@ -191,13 +194,13 @@ export default function GoalsPage() {
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">
-              No habits added yet
+              {t("noHabitsYet")}
             </p>
           )}
 
           <div className="flex gap-2">
             <Input
-              placeholder="Add a habit..."
+              placeholder={t("addHabit")}
               value={newHabit}
               onChange={(e) => setNewHabit(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && addHabit()}
@@ -225,17 +228,17 @@ export default function GoalsPage() {
         {saving ? (
           <>
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            Saving...
+            {tc("saving")}
           </>
         ) : saved ? (
           <>
             <Check className="h-4 w-4 mr-2" />
-            Saved!
+            {tc("saved")}
           </>
         ) : (
           <>
             <Save className="h-4 w-4 mr-2" />
-            Save Goals
+            {t("saveGoals")}
           </>
         )}
       </Button>

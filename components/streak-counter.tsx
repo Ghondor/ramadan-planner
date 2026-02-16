@@ -1,6 +1,7 @@
 "use client";
 
 import { Flame } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { DailyProgress } from "@/lib/types/database";
 
 export function calculateStreak(progressList: DailyProgress[]): number {
@@ -43,6 +44,8 @@ interface StreakCounterProps {
 }
 
 export function StreakCounter({ streak, mode }: StreakCounterProps) {
+  const t = useTranslations("streak");
+
   return (
     <div
       className={`flex items-center gap-2 px-4 py-3 rounded-xl ${
@@ -60,11 +63,11 @@ export function StreakCounter({ streak, mode }: StreakCounterProps) {
       />
       <div>
         <p className="text-2xl font-bold tabular-nums">{streak}</p>
-        <p className="text-xs text-muted-foreground">Day Streak</p>
+        <p className="text-xs text-muted-foreground">{t("dayStreak")}</p>
       </div>
       {mode === "spark" && streak >= 7 && (
         <span className="ml-auto text-xs font-semibold bg-orange-500 text-white px-2 py-0.5 rounded-full">
-          On Fire!
+          {t("onFire")}
         </span>
       )}
     </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useProfile } from "@/lib/hooks/use-profile";
 import { useCurrentPlanner } from "@/lib/hooks/use-planner";
 import { usePrayerTimes } from "@/lib/hooks/use-prayer-times";
@@ -21,6 +21,7 @@ import {
   Sparkles,
   Star,
 } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
 import type { SalahStatus } from "@/lib/types/database";
 
 const SALAH_NAMES: (keyof SalahStatus)[] = [
@@ -31,14 +32,6 @@ const SALAH_NAMES: (keyof SalahStatus)[] = [
   "isha",
   "taraweeh",
 ];
-const SALAH_LABELS: Record<string, string> = {
-  fajr: "Fajr",
-  dhuhr: "Dhuhr",
-  asr: "Asr",
-  maghrib: "Maghrib",
-  isha: "Isha",
-  taraweeh: "Taraweeh",
-};
 
 export default function DashboardClient() {
   const [today] = useState(() => {
@@ -55,6 +48,10 @@ export default function DashboardClient() {
   const { data: todayProgress } = useDailyProgress(planner?.id ?? null, today);
   const { data: allProgress } = useAllProgress(planner?.id ?? null);
   const upsertProgress = useUpsertDailyProgress();
+  const t = useTranslations("dashboard");
+  const tc = useTranslations("common");
+  const tp = useTranslations("prayers");
+  const locale = useLocale();
 
   const [salah, setSalah] = useState<SalahStatus>({
     fajr: false,
@@ -109,12 +106,10 @@ export default function DashboardClient() {
     return (
       <div className="p-4 max-w-lg mx-auto text-center space-y-4 pt-20">
         <Moon className="h-12 w-12 mx-auto text-muted-foreground" />
-        <h2 className="text-xl font-bold">No Planner Yet</h2>
-        <p className="text-muted-foreground">
-          Set up your Ramadan planner to get started
-        </p>
+        <h2 className="text-xl font-bold">{tc("noPlanner")}</h2>
+        <p className="text-muted-foreground">{t("noPlanner")}</p>
         <Button asChild>
-          <Link href="/onboarding">Set Up Planner</Link>
+          <Link href="/onboarding">{tc("setupPlanner")}</Link>
         </Button>
       </div>
     );
@@ -125,11 +120,11 @@ export default function DashboardClient() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold">Assalamu Alaikum</h1>
+          <h1 className="text-xl font-bold">{t("greeting")}</h1>
           <p className="text-sm text-muted-foreground">
             {prayerData?.date?.hijri
-              ? `${prayerData.date.hijri.day} ${prayerData.date.hijri.month.en} ${prayerData.date.hijri.year} AH`
-              : new Date().toLocaleDateString("en-US", {
+              ? `${prayerData.date.hijri.day} ${prayerData.date.hijri.month.en} ${prayerData.date.hijri.year} ${tc("ah")}`
+              : new Date().toLocaleDateString(locale, {
                   weekday: "long",
                   month: "long",
                   day: "numeric",
@@ -148,7 +143,7 @@ export default function DashboardClient() {
           ) : (
             <BookOpen className="h-3 w-3" />
           )}
-          {mode === "spark" ? "Spark" : "Classic"}
+          {mode === "spark" ? tc("spark") : tc("classic")}
         </div>
       </div>
 
@@ -160,9 +155,9 @@ export default function DashboardClient() {
         <Card className="border-emerald-200 dark:border-emerald-800">
           <CardContent className="pt-4 pb-3">
             <div className="flex justify-between text-xs mb-1">
-              <span className="font-medium">Daily XP</span>
+              <span className="font-medium">{t("dailyXp")}</span>
               <span className="text-muted-foreground">
-                {salahCount * 10 + (todayProgress?.quran_pages ?? 0) * 5} XP
+                {salahCount * 10 + (todayProgress?.quran_pages ?? 0) * 5} {tc("xp")}
               </span>
             </div>
             <Progress
@@ -187,7 +182,7 @@ export default function DashboardClient() {
           <div className="flex items-center justify-between">
             <CardTitle className="text-base flex items-center gap-2">
               <Star className="h-4 w-4" />
-              Today&apos;s Prayers
+              {t("todaysPrayers")}
             </CardTitle>
             <span className="text-xs text-muted-foreground">
               {salahCount}/{salahTotal}
@@ -216,7 +211,7 @@ export default function DashboardClient() {
                       : ""
                   }`}
                 >
-                  {SALAH_LABELS[prayer]}
+                  {tp(prayer)}
                 </span>
               </label>
             ))}
@@ -232,7 +227,7 @@ export default function DashboardClient() {
         size="lg"
       >
         <Link href={`/dashboard/daily/${today}`}>
-          Open Full Daily View
+          {t("openDailyView")}
           <ChevronRight className="h-4 w-4" />
         </Link>
       </Button>
@@ -241,11 +236,10 @@ export default function DashboardClient() {
       <Card className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20 border-emerald-200 dark:border-emerald-800">
         <CardContent className="pt-4 pb-4">
           <p className="text-sm italic text-center text-emerald-800 dark:text-emerald-200">
-            &quot;The best of you are those who learn the Quran and teach
-            it.&quot;
+            {t("quoteText")}
           </p>
           <p className="text-xs text-center text-emerald-600 dark:text-emerald-400 mt-1">
-            — Prophet Muhammad (PBUH)
+            {t("quoteAttribution")}
           </p>
         </CardContent>
       </Card>

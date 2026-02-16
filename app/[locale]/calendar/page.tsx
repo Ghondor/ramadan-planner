@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { useCurrentPlanner } from "@/lib/hooks/use-planner";
 import { useAllProgress } from "@/lib/hooks/use-daily-progress";
 import { useMode } from "@/lib/context/mode-context";
@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Calendar as CalendarIcon, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 function getCompletionPercent(entry: {
   salah_status: { fajr: boolean; dhuhr: boolean; asr: boolean; maghrib: boolean; isha: boolean; taraweeh: boolean };
@@ -49,6 +50,8 @@ export default function CalendarPage() {
   const { data: allProgress, isLoading: progressLoading } = useAllProgress(
     planner?.id ?? null
   );
+  const t = useTranslations("calendar");
+  const tc = useTranslations("common");
 
   const days = useMemo(() => {
     if (!planner) return [];
@@ -84,12 +87,10 @@ export default function CalendarPage() {
     return (
       <div className="p-4 max-w-lg mx-auto text-center space-y-4 pt-20">
         <Moon className="h-12 w-12 mx-auto text-muted-foreground" />
-        <h2 className="text-xl font-bold">No Planner Yet</h2>
-        <p className="text-muted-foreground">
-          Set up your Ramadan planner to see the calendar
-        </p>
+        <h2 className="text-xl font-bold">{tc("noPlanner")}</h2>
+        <p className="text-muted-foreground">{t("noPlanner")}</p>
         <Button asChild>
-          <Link href="/onboarding">Set Up Planner</Link>
+          <Link href="/onboarding">{tc("setupPlanner")}</Link>
         </Button>
       </div>
     );
@@ -104,18 +105,17 @@ export default function CalendarPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold flex items-center gap-2">
           <CalendarIcon className="h-5 w-5" />
-          Ramadan Calendar
+          {t("title")}
         </h1>
         <span className="text-sm text-muted-foreground">
-          {planner.year_hijri} AH
+          {planner.year_hijri} {tc("ah")}
         </span>
       </div>
 
-      {/* Overall progress */}
       <Card>
         <CardContent className="pt-4 pb-3">
           <div className="flex justify-between items-center text-sm">
-            <span>Overall Completion</span>
+            <span>{t("overallCompletion")}</span>
             <span className="font-bold">{totalPercent}%</span>
           </div>
           <div className="mt-2 h-2 rounded-full bg-muted overflow-hidden">
@@ -127,10 +127,9 @@ export default function CalendarPage() {
         </CardContent>
       </Card>
 
-      {/* Calendar Grid */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">30-Day Grid</CardTitle>
+          <CardTitle className="text-base">{t("thirtyDayGrid")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-6 gap-2">
@@ -138,7 +137,6 @@ export default function CalendarPage() {
               const today = new Date();
               const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
               const isToday = day.date === todayStr;
-              const isPast = new Date(day.date) < new Date(todayStr);
 
               return (
                 <Link
@@ -151,7 +149,7 @@ export default function CalendarPage() {
                   }`}
                 >
                   <span className="text-xs font-medium">{day.day}</span>
-                  {day.hasData || isPast ? (
+                  {day.hasData ? (
                     <div
                       className={`mt-1 h-1.5 w-full rounded-full ${getColorForPercent(day.percent)}`}
                     />
@@ -172,23 +170,22 @@ export default function CalendarPage() {
         </CardContent>
       </Card>
 
-      {/* Legend */}
       <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
         <div className="flex items-center gap-1">
           <div className="h-2 w-2 rounded-full bg-emerald-500" />
-          <span>80%+</span>
+          <span>{t("legendHigh")}</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="h-2 w-2 rounded-full bg-amber-400" />
-          <span>50-79%</span>
+          <span>{t("legendMid")}</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="h-2 w-2 rounded-full bg-red-400" />
-          <span>&lt;50%</span>
+          <span>{t("legendLow")}</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="h-2 w-2 rounded-full bg-muted border" />
-          <span>No data</span>
+          <span>{t("legendNone")}</span>
         </div>
       </div>
     </div>

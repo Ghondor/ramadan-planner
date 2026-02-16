@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { useProfile, useUpdateProfile } from "@/lib/hooks/use-profile";
 import { useCurrentPlanner } from "@/lib/hooks/use-planner";
 import { useAllProgress } from "@/lib/hooks/use-daily-progress";
 import { useMode } from "@/lib/context/mode-context";
 import { createClient } from "@/lib/supabase/client";
 import { ThemeSwitcher } from "@/components/theme-switcher";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,6 +51,8 @@ import type { Madhab, Mode } from "@/lib/types/database";
 
 export default function SettingsPage() {
   const router = useRouter();
+  const t = useTranslations("settings");
+  const tc = useTranslations("common");
   const { mode, setMode } = useMode();
   const { data: profile, isLoading } = useProfile();
   const { data: planner } = useCurrentPlanner();
@@ -142,7 +146,7 @@ export default function SettingsPage() {
     <div className="p-4 space-y-4 max-w-lg mx-auto">
       <h1 className="text-xl font-bold flex items-center gap-2">
         <Settings className="h-5 w-5" />
-        Settings
+        {t("title")}
       </h1>
 
       {/* Profile */}
@@ -150,13 +154,13 @@ export default function SettingsPage() {
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             <User className="h-4 w-4" />
-            Profile
+            {t("profile")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Mode */}
           <div className="space-y-2">
-            <Label>Experience Mode</Label>
+            <Label>{t("experienceMode")}</Label>
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => setSelectedMode("classic")}
@@ -167,7 +171,7 @@ export default function SettingsPage() {
                 }`}
               >
                 <BookOpen className="h-4 w-4 text-amber-500" />
-                <span className="text-sm font-medium">Classic</span>
+                <span className="text-sm font-medium">{tc("classic")}</span>
               </button>
               <button
                 onClick={() => setSelectedMode("spark")}
@@ -178,7 +182,7 @@ export default function SettingsPage() {
                 }`}
               >
                 <Sparkles className="h-4 w-4 text-emerald-500" />
-                <span className="text-sm font-medium">Spark</span>
+                <span className="text-sm font-medium">{tc("spark")}</span>
               </button>
             </div>
           </div>
@@ -189,12 +193,12 @@ export default function SettingsPage() {
           <div className="space-y-2">
             <Label className="flex items-center gap-1">
               <MapPin className="h-3 w-3" />
-              Location
+              {t("location")}
             </Label>
             <Input
               value={locationName}
               onChange={(e) => setLocationName(e.target.value)}
-              placeholder="City name"
+              placeholder={t("cityName")}
             />
             <div className="grid grid-cols-2 gap-2">
               <Input
@@ -202,21 +206,21 @@ export default function SettingsPage() {
                 step="0.0001"
                 value={lat}
                 onChange={(e) => setLat(e.target.value)}
-                placeholder="Latitude"
+                placeholder={t("latitude")}
               />
               <Input
                 type="number"
                 step="0.0001"
                 value={lng}
                 onChange={(e) => setLng(e.target.value)}
-                placeholder="Longitude"
+                placeholder={t("longitude")}
               />
             </div>
           </div>
 
           {/* Madhab */}
           <div className="space-y-2">
-            <Label>Madhab</Label>
+            <Label>{t("madhab")}</Label>
             <Select
               value={madhab}
               onValueChange={(v) => setMadhab(v as Madhab)}
@@ -225,10 +229,10 @@ export default function SettingsPage() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="hanafi">Hanafi</SelectItem>
-                <SelectItem value="shafi">Shafi&apos;i</SelectItem>
-                <SelectItem value="maliki">Maliki</SelectItem>
-                <SelectItem value="hanbali">Hanbali</SelectItem>
+                <SelectItem value="hanafi">{t("hanafi")}</SelectItem>
+                <SelectItem value="shafi">{t("shafi")}</SelectItem>
+                <SelectItem value="maliki">{t("maliki")}</SelectItem>
+                <SelectItem value="hanbali">{t("hanbali")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -245,7 +249,7 @@ export default function SettingsPage() {
             ) : (
               <Save className="h-4 w-4 mr-2" />
             )}
-            {saved ? "Saved!" : "Save Changes"}
+            {saved ? tc("saved") : t("saveChanges")}
           </Button>
         </CardContent>
       </Card>
@@ -255,13 +259,18 @@ export default function SettingsPage() {
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             <Palette className="h-4 w-4" />
-            Appearance
+            {t("appearance")}
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-3">
           <div className="flex items-center justify-between">
-            <Label>Theme</Label>
+            <Label>{t("theme")}</Label>
             <ThemeSwitcher />
+          </div>
+          <Separator />
+          <div className="flex items-center justify-between">
+            <Label>{t("language")}</Label>
+            <LanguageSwitcher />
           </div>
         </CardContent>
       </Card>
@@ -271,7 +280,7 @@ export default function SettingsPage() {
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             <KeyRound className="h-4 w-4" />
-            Account
+            {t("account")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
@@ -281,7 +290,7 @@ export default function SettingsPage() {
             onClick={() => router.push("/auth/update-password")}
           >
             <KeyRound className="h-4 w-4 mr-2" />
-            Change Password
+            {t("changePassword")}
           </Button>
           <Button
             variant="outline"
@@ -289,7 +298,7 @@ export default function SettingsPage() {
             onClick={handleLogout}
           >
             <LogOut className="h-4 w-4 mr-2" />
-            Sign Out
+            {t("signOut")}
           </Button>
         </CardContent>
       </Card>
@@ -299,7 +308,7 @@ export default function SettingsPage() {
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             <Download className="h-4 w-4" />
-            Data
+            {t("data")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
@@ -310,7 +319,7 @@ export default function SettingsPage() {
             disabled={!allProgress?.length}
           >
             <Download className="h-4 w-4 mr-2" />
-            Export Data (JSON)
+            {t("exportData")}
           </Button>
 
           <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
@@ -320,15 +329,14 @@ export default function SettingsPage() {
                 className="w-full justify-start text-destructive hover:text-destructive"
               >
                 <Trash2 className="h-4 w-4 mr-2" />
-                Delete All Planner Data
+                {t("deleteAllData")}
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Delete all data?</DialogTitle>
+                <DialogTitle>{t("deleteAllTitle")}</DialogTitle>
                 <DialogDescription>
-                  This will permanently delete all your planners, daily progress,
-                  and achievements. This action cannot be undone.
+                  {t("deleteAllDesc")}
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter>
@@ -336,7 +344,7 @@ export default function SettingsPage() {
                   variant="outline"
                   onClick={() => setDeleteOpen(false)}
                 >
-                  Cancel
+                  {tc("cancel")}
                 </Button>
                 <Button
                   variant="destructive"
@@ -348,7 +356,7 @@ export default function SettingsPage() {
                   ) : (
                     <Trash2 className="h-4 w-4 mr-2" />
                   )}
-                  Delete Everything
+                  {t("deleteEverything")}
                 </Button>
               </DialogFooter>
             </DialogContent>

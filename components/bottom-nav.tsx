@@ -1,20 +1,21 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { Home, Calendar, Target, BarChart3, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const NAV_ITEMS = [
-  { href: "/dashboard", icon: Home, label: "Home" },
-  { href: "/calendar", icon: Calendar, label: "Calendar" },
-  { href: "/goals", icon: Target, label: "Goals" },
-  { href: "/stats", icon: BarChart3, label: "Stats" },
-  { href: "/settings", icon: Settings, label: "Settings" },
-];
+import { useTranslations } from "next-intl";
 
 export function BottomNav() {
   const pathname = usePathname();
+  const t = useTranslations("nav");
+
+  const NAV_ITEMS = [
+    { href: "/dashboard" as const, icon: Home, label: t("home") },
+    { href: "/calendar" as const, icon: Calendar, label: t("calendar") },
+    { href: "/goals" as const, icon: Target, label: t("goals") },
+    { href: "/stats" as const, icon: BarChart3, label: t("stats") },
+    { href: "/settings" as const, icon: Settings, label: t("settings") },
+  ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 pb-safe">

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import { getRamadanDates } from "@/lib/api/ramadan";
 import { Button } from "@/components/ui/button";
@@ -36,16 +37,11 @@ import {
 import type { Mode, Madhab } from "@/lib/types/database";
 
 const DEFAULT_HABITS = ["dhikr", "dua", "charity", "extra-sunnah", "reading"];
-const HABIT_LABELS: Record<string, string> = {
-  dhikr: "Daily Dhikr",
-  dua: "Make Dua",
-  charity: "Give Charity",
-  "extra-sunnah": "Extra Sunnah Prayers",
-  reading: "Islamic Reading",
-};
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const t = useTranslations("onboarding");
+  const tc = useTranslations("common");
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -65,6 +61,14 @@ export default function OnboardingPage() {
     "dua",
     "charity",
   ]);
+
+  const HABIT_LABELS: Record<string, string> = {
+    dhikr: t("habitDhikr"),
+    dua: t("habitDua"),
+    charity: t("habitCharity"),
+    "extra-sunnah": t("habitSunnah"),
+    reading: t("habitReading"),
+  };
 
   const toggleHabit = (habit: string) => {
     setSelectedHabits((prev) =>
@@ -127,7 +131,7 @@ export default function OnboardingPage() {
 
       router.push("/dashboard");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      setError(err instanceof Error ? err.message : t("somethingWrong"));
     } finally {
       setIsLoading(false);
     }
@@ -139,7 +143,7 @@ export default function OnboardingPage() {
         {/* Progress */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm text-muted-foreground">
-            <span>Step {step} of 3</span>
+            <span>{t("stepOf", { step })}</span>
             <span>{Math.round((step / 3) * 100)}%</span>
           </div>
           <Progress value={(step / 3) * 100} className="h-2" />
@@ -152,14 +156,14 @@ export default function OnboardingPage() {
               <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center mb-2">
                 <MapPin className="h-5 w-5 text-white" />
               </div>
-              <CardTitle className="text-2xl">Where are you?</CardTitle>
+              <CardTitle className="text-2xl">{t("whereAreYou")}</CardTitle>
               <CardDescription>
-                We&apos;ll use your location for accurate prayer times
+                {t("locationDesc")}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-2">
-                <Label htmlFor="location">City</Label>
+                <Label htmlFor="location">{t("city")}</Label>
                 <Input
                   id="location"
                   value={locationName}
@@ -169,7 +173,7 @@ export default function OnboardingPage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="grid gap-2">
-                  <Label htmlFor="lat">Latitude</Label>
+                  <Label htmlFor="lat">{t("latitude")}</Label>
                   <Input
                     id="lat"
                     type="number"
@@ -179,7 +183,7 @@ export default function OnboardingPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="lng">Longitude</Label>
+                  <Label htmlFor="lng">{t("longitude")}</Label>
                   <Input
                     id="lng"
                     type="number"
@@ -190,19 +194,19 @@ export default function OnboardingPage() {
                 </div>
               </div>
               <div className="grid gap-2">
-                <Label>Hijri Year</Label>
+                <Label>{t("hijriYear")}</Label>
                 <Select value={yearHijri} onValueChange={setYearHijri}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="1447">1447 AH (2026)</SelectItem>
-                    <SelectItem value="1448">1448 AH (2027)</SelectItem>
+                    <SelectItem value="1447">{t("hijri1447")}</SelectItem>
+                    <SelectItem value="1448">{t("hijri1448")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="grid gap-2">
-                <Label>Madhab (School of Thought)</Label>
+                <Label>{t("madhabLabel")}</Label>
                 <Select
                   value={madhab}
                   onValueChange={(v) => setMadhab(v as Madhab)}
@@ -224,7 +228,7 @@ export default function OnboardingPage() {
                 className="w-full"
                 size="lg"
               >
-                Continue
+                {tc("continue")}
                 <ChevronRight className="h-4 w-4 ml-2" />
               </Button>
             </CardContent>
@@ -238,15 +242,15 @@ export default function OnboardingPage() {
               <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center mb-2">
                 <Sparkles className="h-5 w-5 text-white" />
               </div>
-              <CardTitle className="text-2xl">Personalize</CardTitle>
+              <CardTitle className="text-2xl">{t("personalize")}</CardTitle>
               <CardDescription>
-                Choose your mode and set your Ramadan goals
+                {t("personalizeDesc")}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Mode selector */}
               <div className="space-y-3">
-                <Label>Experience Mode</Label>
+                <Label>{t("experienceMode")}</Label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     onClick={() => setMode("classic")}
@@ -257,9 +261,9 @@ export default function OnboardingPage() {
                     }`}
                   >
                     <BookOpen className="h-5 w-5 mb-2 text-amber-500" />
-                    <p className="font-semibold text-sm">Classic</p>
+                    <p className="font-semibold text-sm">{tc("classic")}</p>
                     <p className="text-xs text-muted-foreground">
-                      Reflective & calm
+                      {t("reflective")}
                     </p>
                   </button>
                   <button
@@ -271,9 +275,9 @@ export default function OnboardingPage() {
                     }`}
                   >
                     <Sparkles className="h-5 w-5 mb-2 text-emerald-500" />
-                    <p className="font-semibold text-sm">Spark</p>
+                    <p className="font-semibold text-sm">{tc("spark")}</p>
                     <p className="text-xs text-muted-foreground">
-                      Gamified & driven
+                      {t("gamified")}
                     </p>
                   </button>
                 </div>
@@ -282,8 +286,7 @@ export default function OnboardingPage() {
               {/* Quran goal */}
               <div className="space-y-3">
                 <Label>
-                  Daily Quran Goal:{" "}
-                  <span className="font-bold">{quranPagesPerDay} pages</span>
+                  {t("dailyQuranGoal", { count: quranPagesPerDay })}
                 </Label>
                 <Slider
                   value={[quranPagesPerDay]}
@@ -295,14 +298,14 @@ export default function OnboardingPage() {
                 />
                 <p className="text-xs text-muted-foreground">
                   {quranPagesPerDay >= 20
-                    ? "Complete Quran in Ramadan!"
-                    : `~${Math.ceil(604 / quranPagesPerDay)} days to complete the Quran`}
+                    ? t("completeQuran")
+                    : t("daysToComplete", { days: Math.ceil(604 / quranPagesPerDay) })}
                 </p>
               </div>
 
               {/* Habits */}
               <div className="space-y-3">
-                <Label>Daily Habits</Label>
+                <Label>{t("dailyHabits")}</Label>
                 <div className="space-y-2">
                   {DEFAULT_HABITS.map((habit) => (
                     <label
@@ -327,14 +330,14 @@ export default function OnboardingPage() {
                   size="lg"
                 >
                   <ChevronLeft className="h-4 w-4 mr-2" />
-                  Back
+                  {tc("back")}
                 </Button>
                 <Button
                   onClick={() => setStep(3)}
                   className="flex-1"
                   size="lg"
                 >
-                  Continue
+                  {tc("continue")}
                   <ChevronRight className="h-4 w-4 ml-2" />
                 </Button>
               </div>
@@ -349,27 +352,27 @@ export default function OnboardingPage() {
               <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center mb-2">
                 <Rocket className="h-5 w-5 text-white" />
               </div>
-              <CardTitle className="text-2xl">Ready to begin!</CardTitle>
+              <CardTitle className="text-2xl">{t("readyTitle")}</CardTitle>
               <CardDescription>
-                Here&apos;s a summary of your Ramadan planner
+                {t("readySummary")}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="rounded-xl bg-muted/50 p-4 space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Location</span>
+                  <span className="text-muted-foreground">{t("summaryLocation")}</span>
                   <span className="font-medium">{locationName}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Year</span>
-                  <span className="font-medium">{yearHijri} AH</span>
+                  <span className="text-muted-foreground">{t("summaryYear")}</span>
+                  <span className="font-medium">{yearHijri} {tc("ah")}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Madhab</span>
+                  <span className="text-muted-foreground">{t("summaryMadhab")}</span>
                   <span className="font-medium capitalize">{madhab}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Mode</span>
+                  <span className="text-muted-foreground">{t("summaryMode")}</span>
                   <span className="font-medium capitalize flex items-center gap-1">
                     {mode === "spark" ? (
                       <Sparkles className="h-3 w-3" />
@@ -380,13 +383,13 @@ export default function OnboardingPage() {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Quran Goal</span>
+                  <span className="text-muted-foreground">{t("summaryQuranGoal")}</span>
                   <span className="font-medium">
-                    {quranPagesPerDay} pages/day
+                    {tc("pagesPerDay", { count: quranPagesPerDay })}
                   </span>
                 </div>
                 <div className="flex justify-between items-start">
-                  <span className="text-muted-foreground">Habits</span>
+                  <span className="text-muted-foreground">{t("summaryHabits")}</span>
                   <span className="font-medium text-right">
                     {selectedHabits.map((h) => HABIT_LABELS[h]).join(", ")}
                   </span>
@@ -405,7 +408,7 @@ export default function OnboardingPage() {
                   size="lg"
                 >
                   <ChevronLeft className="h-4 w-4 mr-2" />
-                  Back
+                  {tc("back")}
                 </Button>
                 <Button
                   onClick={handleComplete}
@@ -413,7 +416,7 @@ export default function OnboardingPage() {
                   className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white"
                   size="lg"
                 >
-                  {isLoading ? "Creating..." : "Begin Ramadan!"}
+                  {isLoading ? t("creating") : t("beginRamadan")}
                   <Rocket className="h-4 w-4 ml-2" />
                 </Button>
               </div>

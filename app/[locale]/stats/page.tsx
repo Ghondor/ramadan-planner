@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { useCurrentPlanner } from "@/lib/hooks/use-planner";
 import { useAllProgress } from "@/lib/hooks/use-daily-progress";
 import { useMode } from "@/lib/context/mode-context";
@@ -33,14 +34,16 @@ import {
 } from "recharts";
 
 const SPARK_BADGES = [
-  { type: "first-prayer", label: "First Prayer", icon: "star", threshold: 1 },
-  { type: "week-streak", label: "7-Day Streak", icon: "flame", threshold: 7 },
-  { type: "half-quran", label: "Half Quran", icon: "book", threshold: 302 },
-  { type: "full-month", label: "30 Days Strong", icon: "trophy", threshold: 30 },
-  { type: "perfect-day", label: "Perfect Day", icon: "star", threshold: 1 },
+  { type: "first-prayer", labelKey: "firstPrayer" as const, icon: "star", threshold: 1 },
+  { type: "week-streak", labelKey: "sevenDayStreak" as const, icon: "flame", threshold: 7 },
+  { type: "half-quran", labelKey: "halfQuran" as const, icon: "book", threshold: 302 },
+  { type: "full-month", labelKey: "thirtyDaysStrong" as const, icon: "trophy", threshold: 30 },
+  { type: "perfect-day", labelKey: "perfectDay" as const, icon: "star", threshold: 1 },
 ];
 
 export default function StatsPage() {
+  const t = useTranslations("stats");
+  const tc = useTranslations("common");
   const { mode } = useMode();
   const { data: planner, isLoading: plannerLoading } = useCurrentPlanner();
   const { data: allProgress, isLoading: progressLoading } = useAllProgress(
@@ -155,10 +158,10 @@ export default function StatsPage() {
     return (
       <div className="p-4 max-w-lg mx-auto text-center space-y-4 pt-20">
         <Moon className="h-12 w-12 mx-auto text-muted-foreground" />
-        <h2 className="text-xl font-bold">No Planner Yet</h2>
-        <p className="text-muted-foreground">Set up your planner first</p>
+        <h2 className="text-xl font-bold">{tc("noPlanner")}</h2>
+        <p className="text-muted-foreground">{t("noPlanner")}</p>
         <Button asChild>
-          <Link href="/onboarding">Set Up Planner</Link>
+          <Link href="/onboarding">{tc("setupPlanner")}</Link>
         </Button>
       </div>
     );
@@ -169,7 +172,7 @@ export default function StatsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold flex items-center gap-2">
           <BarChart3 className="h-5 w-5" />
-          Statistics
+          {t("title")}
         </h1>
         <Button
           variant="outline"
@@ -182,7 +185,7 @@ export default function StatsPage() {
           ) : (
             <Download className="h-4 w-4" />
           )}
-          <span className="ml-1.5 text-xs">PDF</span>
+          <span className="ml-1.5 text-xs">{t("pdf")}</span>
         </Button>
       </div>
 
@@ -193,7 +196,7 @@ export default function StatsPage() {
             <CardContent className="pt-4 pb-3 text-center">
               <Star className="h-5 w-5 mx-auto text-amber-500 mb-1" />
               <p className="text-2xl font-bold">{stats?.totalPrayers ?? 0}</p>
-              <p className="text-xs text-muted-foreground">Total Prayers</p>
+              <p className="text-xs text-muted-foreground">{t("totalPrayers")}</p>
             </CardContent>
           </Card>
           <Card>
@@ -202,21 +205,21 @@ export default function StatsPage() {
               <p className="text-2xl font-bold">
                 {stats?.totalQuranPages ?? 0}
               </p>
-              <p className="text-xs text-muted-foreground">Quran Pages</p>
+              <p className="text-xs text-muted-foreground">{t("quranPages")}</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-4 pb-3 text-center">
               <Flame className="h-5 w-5 mx-auto text-orange-500 mb-1" />
               <p className="text-2xl font-bold">{stats?.streak ?? 0}</p>
-              <p className="text-xs text-muted-foreground">Day Streak</p>
+              <p className="text-xs text-muted-foreground">{t("dayStreak")}</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="pt-4 pb-3 text-center">
               <Moon className="h-5 w-5 mx-auto text-blue-500 mb-1" />
               <p className="text-2xl font-bold">{stats?.fastingDays ?? 0}</p>
-              <p className="text-xs text-muted-foreground">Fasting Days</p>
+              <p className="text-xs text-muted-foreground">{t("fastingDays")}</p>
             </CardContent>
           </Card>
         </div>
@@ -226,7 +229,7 @@ export default function StatsPage() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-base">
-                Daily Prayer Completion
+                {t("dailyPrayerCompletion")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -253,7 +256,7 @@ export default function StatsPage() {
         {stats?.quranChartData && stats.quranChartData.length > 0 && (
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-base">Quran Pages vs Goal</CardTitle>
+              <CardTitle className="text-base">{t("quranVsGoal")}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-48">
@@ -288,7 +291,7 @@ export default function StatsPage() {
         {allProgress && allProgress.length > 0 && (
           <Card>
             <CardHeader className="pb-2">
-              <CardTitle className="text-base">Consistency Heatmap</CardTitle>
+              <CardTitle className="text-base">{t("consistencyHeatmap")}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-10 gap-1">
@@ -323,7 +326,7 @@ export default function StatsPage() {
             <CardHeader className="pb-2">
               <CardTitle className="text-base flex items-center gap-2">
                 <Trophy className="h-4 w-4" />
-                Achievements
+                {t("achievements")}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -352,13 +355,13 @@ export default function StatsPage() {
                         {badge.icon === "trophy" && <Trophy className="h-4 w-4" />}
                       </div>
                       <div>
-                        <p className="text-xs font-semibold">{badge.label}</p>
+                        <p className="text-xs font-semibold">{t(badge.labelKey)}</p>
                         {earned && (
                           <Badge
                             variant="secondary"
                             className="text-[9px] px-1 py-0"
                           >
-                            Earned
+                            {t("earned")}
                           </Badge>
                         )}
                       </div>

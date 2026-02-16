@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface TimeLeft {
   days: number;
@@ -10,6 +11,7 @@ interface TimeLeft {
 }
 
 export function Countdown({ targetDate }: { targetDate: string }) {
+  const t = useTranslations("countdown");
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({
     days: 0,
     hours: 0,
@@ -46,10 +48,10 @@ export function Countdown({ targetDate }: { targetDate: string }) {
     return (
       <div className="text-center">
         <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-          Ramadan Mubarak!
+          {t("ramadanMubarak")}
         </p>
         <p className="text-muted-foreground mt-1">
-          Ramadan is here. Start your planner now.
+          {t("ramadanIsHere")}
         </p>
       </div>
     );
@@ -58,14 +60,14 @@ export function Countdown({ targetDate }: { targetDate: string }) {
   return (
     <div className="text-center space-y-3">
       <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-        Ramadan begins in
+        {t("beginsIn")}
       </p>
       <div className="flex items-center justify-center gap-3 sm:gap-4">
         {[
-          { value: timeLeft.days, label: "Days" },
-          { value: timeLeft.hours, label: "Hours" },
-          { value: timeLeft.minutes, label: "Min" },
-          { value: timeLeft.seconds, label: "Sec" },
+          { value: timeLeft.days, label: t("days") },
+          { value: timeLeft.hours, label: t("hours") },
+          { value: timeLeft.minutes, label: t("min") },
+          { value: timeLeft.seconds, label: t("sec") },
         ].map((unit) => (
           <div
             key={unit.label}

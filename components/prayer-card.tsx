@@ -3,9 +3,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Clock } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { PrayerTimings } from "@/lib/api/aladhan";
 
-const PRAYER_NAMES: (keyof PrayerTimings)[] = [
+const PRAYER_KEYS: (keyof PrayerTimings)[] = [
   "Fajr",
   "Sunrise",
   "Dhuhr",
@@ -14,11 +15,20 @@ const PRAYER_NAMES: (keyof PrayerTimings)[] = [
   "Isha",
 ];
 
+const PRAYER_I18N_MAP: Record<string, string> = {
+  Fajr: "fajr",
+  Sunrise: "sunrise",
+  Dhuhr: "dhuhr",
+  Asr: "asr",
+  Maghrib: "maghrib",
+  Isha: "isha",
+};
+
 function getNextPrayer(timings: PrayerTimings): string | null {
   const now = new Date();
   const currentTime = now.getHours() * 60 + now.getMinutes();
 
-  for (const prayer of PRAYER_NAMES) {
+  for (const prayer of PRAYER_KEYS) {
     if (prayer === "Sunrise") continue;
     const [h, m] = timings[prayer].split(":").map(Number);
     if (h * 60 + m > currentTime) return prayer;
@@ -32,6 +42,7 @@ interface PrayerCardProps {
 }
 
 export function PrayerCard({ timings, isLoading }: PrayerCardProps) {
+  const t = useTranslations("prayers");
   const nextPrayer = timings ? getNextPrayer(timings) : null;
 
   return (
@@ -39,7 +50,7 @@ export function PrayerCard({ timings, isLoading }: PrayerCardProps) {
       <CardHeader className="pb-3">
         <CardTitle className="text-base flex items-center gap-2">
           <Clock className="h-4 w-4" />
-          Prayer Times
+          {t("prayerTimes")}
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -51,7 +62,7 @@ export function PrayerCard({ timings, isLoading }: PrayerCardProps) {
           </div>
         ) : timings ? (
           <div className="space-y-2">
-            {PRAYER_NAMES.map((prayer) => (
+            {PRAYER_KEYS.map((prayer) => (
               <div
                 key={prayer}
                 className={`flex justify-between items-center py-1.5 px-2 rounded-lg text-sm ${
@@ -60,7 +71,7 @@ export function PrayerCard({ timings, isLoading }: PrayerCardProps) {
                     : ""
                 }`}
               >
-                <span>{prayer}</span>
+                <span>{t(PRAYER_I18N_MAP[prayer])}</span>
                 <span className="tabular-nums font-mono text-xs">
                   {timings[prayer]}
                 </span>
@@ -69,7 +80,7 @@ export function PrayerCard({ timings, isLoading }: PrayerCardProps) {
           </div>
         ) : (
           <p className="text-sm text-muted-foreground">
-            Set your location to see prayer times
+            {t("setLocation")}
           </p>
         )}
       </CardContent>

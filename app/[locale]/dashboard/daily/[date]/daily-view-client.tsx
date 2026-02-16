@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useProfile } from "@/lib/hooks/use-profile";
 import { useCurrentPlanner } from "@/lib/hooks/use-planner";
 import { usePrayerTimes } from "@/lib/hooks/use-prayer-times";
@@ -28,6 +29,7 @@ import {
   Loader2,
   Utensils,
 } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
 import type { SalahStatus } from "@/lib/types/database";
 
 const SALAH_NAMES: (keyof SalahStatus)[] = [
@@ -38,14 +40,6 @@ const SALAH_NAMES: (keyof SalahStatus)[] = [
   "isha",
   "taraweeh",
 ];
-const SALAH_LABELS: Record<string, string> = {
-  fajr: "Fajr",
-  dhuhr: "Dhuhr",
-  asr: "Asr",
-  maghrib: "Maghrib",
-  isha: "Isha",
-  taraweeh: "Taraweeh",
-};
 
 export default function DailyViewClient() {
   const params = useParams();
@@ -64,6 +58,10 @@ export default function DailyViewClient() {
     dateStr
   );
   const upsertProgress = useUpsertDailyProgress();
+  const t = useTranslations("daily");
+  const tc = useTranslations("common");
+  const tp = useTranslations("prayers");
+  const locale = useLocale();
 
   const [salah, setSalah] = useState<SalahStatus>({
     fajr: false,
@@ -142,7 +140,7 @@ export default function DailyViewClient() {
     scheduleAutoSave();
   };
 
-  const displayDate = new Date(dateStr).toLocaleDateString("en-US", {
+  const displayDate = new Date(dateStr).toLocaleDateString(locale, {
     weekday: "long",
     month: "long",
     day: "numeric",
@@ -150,7 +148,7 @@ export default function DailyViewClient() {
   });
 
   const hijriDisplay = prayerData?.date?.hijri
-    ? `${prayerData.date.hijri.day} ${prayerData.date.hijri.month.en} ${prayerData.date.hijri.year} AH`
+    ? `${prayerData.date.hijri.day} ${prayerData.date.hijri.month.en} ${prayerData.date.hijri.year} ${tc("ah")}`
     : "";
 
   const salahCount = Object.values(salah).filter(Boolean).length;
@@ -190,7 +188,7 @@ export default function DailyViewClient() {
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             <Clock className="h-4 w-4" />
-            Prayers ({salahCount}/6)
+            {t("prayers", { count: salahCount })}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
@@ -213,7 +211,7 @@ export default function DailyViewClient() {
                     salah[prayer] ? "font-medium line-through text-muted-foreground" : ""
                   }`}
                 >
-                  {SALAH_LABELS[prayer]}
+                  {tp(prayer)}
                 </span>
               </label>
               {prayerLoading ? (
@@ -221,7 +219,7 @@ export default function DailyViewClient() {
               ) : prayerData?.timings ? (
                 <span className="text-xs text-muted-foreground font-mono">
                   {prayer === "taraweeh"
-                    ? "After Isha"
+                    ? tp("afterIsha")
                     : prayerData.timings[
                         (prayer.charAt(0).toUpperCase() +
                           prayer.slice(1)) as keyof typeof prayerData.timings
@@ -239,7 +237,7 @@ export default function DailyViewClient() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Utensils className="h-4 w-4" />
-              <Label className="text-sm font-medium">Fasting Today</Label>
+              <Label className="text-sm font-medium">{t("fastingToday")}</Label>
             </div>
             <Switch
               checked={fasting}
@@ -257,12 +255,12 @@ export default function DailyViewClient() {
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
             <BookOpen className="h-4 w-4" />
-            Quran Reading
+            {t("quranReading")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex justify-between text-sm">
-            <span>Pages read today</span>
+            <span>{t("pagesReadToday")}</span>
             <span className="font-bold">{quranPages}</span>
           </div>
           <Slider
@@ -276,7 +274,7 @@ export default function DailyViewClient() {
             step={1}
           />
           <p className="text-xs text-muted-foreground">
-            Goal: {planner?.goals?.quran_pages_per_day ?? 5} pages/day
+            {t("goalPages", { count: planner?.goals?.quran_pages_per_day ?? 5 })}
           </p>
         </CardContent>
       </Card>
@@ -287,7 +285,7 @@ export default function DailyViewClient() {
           <CardHeader className="pb-3">
             <CardTitle className="text-base flex items-center gap-2">
               <Flame className="h-4 w-4" />
-              Daily Habits
+              {t("dailyHabits")}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-2">
@@ -322,11 +320,11 @@ export default function DailyViewClient() {
       {/* Journal */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Journal & Reflections</CardTitle>
+          <CardTitle className="text-base">{t("journalTitle")}</CardTitle>
         </CardHeader>
         <CardContent>
           <Textarea
-            placeholder="Write your thoughts, duas, or reflections for today..."
+            placeholder={t("journalPlaceholder")}
             value={journal}
             onChange={(e) => {
               setJournal(e.target.value);
@@ -348,21 +346,21 @@ export default function DailyViewClient() {
         {upsertProgress.isPending ? (
           <>
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            Saving...
+            {tc("saving")}
           </>
         ) : saved ? (
           <>
             <Check className="h-4 w-4 mr-2" />
-            Saved!
+            {tc("saved")}
           </>
         ) : (
-          "Save Progress"
+          t("saveProgress")
         )}
       </Button>
 
       {mode === "spark" && (
         <p className="text-xs text-center text-muted-foreground">
-          +{salahCount * 10 + quranPages * 5} XP earned today
+          {t("xpEarned", { count: salahCount * 10 + quranPages * 5 })}
         </p>
       )}
     </div>
