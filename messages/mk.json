@@ -97,6 +97,12 @@
   "goals": {
     "title": "Цели и Навики",
     "quranGoal": "Цел за Читање Куран",
+    "quranGoalType": "Тип на цел",
+    "khatmah1": "1 Хатаме",
+    "khatmah2": "2 Хатаме",
+    "khatmah3": "3 Хатаме",
+    "custom": "Прилагодено",
+    "pagesPerDayShort": "страници/ден",
     "dailyTarget": "Дневна цел",
     "completeQuran": "Ќе го завршиш Куранот во Рамазан!",
     "pagesIn30Days": "{pages} страници за 30 дена (~{days} дена до крај)",

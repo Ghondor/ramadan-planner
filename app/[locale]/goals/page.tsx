@@ -5,7 +5,6 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { useCurrentPlanner } from "@/lib/hooks/use-planner";
 import { useAllProgress } from "@/lib/hooks/use-daily-progress";
-import { useMode } from "@/lib/context/mode-context";
 import { createClient } from "@/lib/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,15 +25,22 @@ import {
   Check,
   Moon,
 } from "lucide-react";
+import type { QuranGoalType } from "@/lib/types/database";
+import {
+  QURAN_PAGES,
+  RAMADAN_DAYS,
+  pagesPerDayForKhatmah,
+  totalPagesForKhatmah,
+} from "@/lib/quran";
 
 export default function GoalsPage() {
   const t = useTranslations("goals");
   const tc = useTranslations("common");
-  const { mode } = useMode();
   const { data: planner, isLoading } = useCurrentPlanner();
   const { data: allProgress } = useAllProgress(planner?.id ?? null);
   const queryClient = useQueryClient();
 
+  const [quranGoalType, setQuranGoalType] = useState<QuranGoalType>("1");
   const [quranGoal, setQuranGoal] = useState(5);
   const [habits, setHabits] = useState<string[]>([]);
   const [newHabit, setNewHabit] = useState("");
@@ -43,7 +49,10 @@ export default function GoalsPage() {
 
   useEffect(() => {
     if (planner?.goals) {
-      setQuranGoal(planner.goals.quran_pages_per_day);
+      const type = planner.goals.quran_goal_type ?? "custom";
+      const pages = planner.goals.quran_pages_per_day;
+      setQuranGoalType(type);
+      setQuranGoal(pages);
       setHabits(planner.goals.habits);
     }
   }, [planner]);
@@ -60,6 +69,15 @@ export default function GoalsPage() {
     setHabits(habits.filter((h) => h !== habit));
   };
 
+  const effectivePagesPerDay =
+    quranGoalType === "custom"
+      ? quranGoal
+      : pagesPerDayForKhatmah(quranGoalType as "1" | "2" | "3");
+  const quranTarget =
+    quranGoalType === "custom"
+      ? quranGoal * RAMADAN_DAYS
+      : totalPagesForKhatmah(quranGoalType as "1" | "2" | "3");
+
   const handleSave = async () => {
     if (!planner) return;
     setSaving(true);
@@ -68,7 +86,11 @@ export default function GoalsPage() {
     await supabase
       .from("planners")
       .update({
-        goals: { quran_pages_per_day: quranGoal, habits },
+        goals: {
+          quran_pages_per_day: effectivePagesPerDay,
+          quran_goal_type: quranGoalType,
+          habits,
+        },
       })
       .eq("id", planner.id);
 
@@ -83,7 +105,6 @@ export default function GoalsPage() {
     allProgress?.reduce((sum, p) => sum + p.quran_pages, 0) ?? 0;
   const daysLogged = allProgress?.length ?? 0;
   const avgQuranPages = daysLogged > 0 ? Math.round(totalQuranPages / daysLogged) : 0;
-  const quranTarget = quranGoal * 30;
 
   if (isLoading) {
     return (
@@ -124,21 +145,65 @@ export default function GoalsPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label>{t("quranGoalType")}</Label>
+            <div className="grid grid-cols-2 gap-2">
+              {(["1", "2", "3"] as const).map((k) => (
+                <button
+                  key={k}
+                  onClick={() => setQuranGoalType(k)}
+                  className={`flex flex-col items-center gap-0.5 p-3 rounded-lg border-2 transition-all ${
+                    quranGoalType === k
+                      ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30"
+                      : "border-border hover:border-emerald-200"
+                  }`}
+                >
+                  <span className="text-sm font-semibold">{t(`khatmah${k}`)}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {pagesPerDayForKhatmah(k)} {t("pagesPerDayShort")}
+                  </span>
+                </button>
+              ))}
+              <button
+                onClick={() => setQuranGoalType("custom")}
+                className={`flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all ${
+                  quranGoalType === "custom"
+                    ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30"
+                    : "border-border hover:border-emerald-200"
+                }`}
+              >
+                <span className="text-sm font-semibold">{t("custom")}</span>
+              </button>
+            </div>
+          </div>
+
+          {quranGoalType === "custom" && (
+            <>
+              <div className="flex justify-between text-sm">
+                <span>{t("dailyTarget")}</span>
+                <span className="font-bold">{tc("pagesPerDay", { count: quranGoal })}</span>
+              </div>
+              <Slider
+                value={[quranGoal]}
+                onValueChange={([v]) => setQuranGoal(v)}
+                min={1}
+                max={60}
+                step={1}
+              />
+            </>
+          )}
+
           <div className="flex justify-between text-sm">
             <span>{t("dailyTarget")}</span>
-            <span className="font-bold">{tc("pagesPerDay", { count: quranGoal })}</span>
+            <span className="font-bold">{tc("pagesPerDay", { count: effectivePagesPerDay })}</span>
           </div>
-          <Slider
-            value={[quranGoal]}
-            onValueChange={([v]) => setQuranGoal(v)}
-            min={1}
-            max={20}
-            step={1}
-          />
           <p className="text-xs text-muted-foreground">
-            {quranGoal >= 20
+            {quranGoalType !== "custom" && effectivePagesPerDay >= pagesPerDayForKhatmah("1")
               ? t("completeQuran")
-              : t("pagesIn30Days", { pages: quranGoal * 30, days: Math.ceil(604 / quranGoal) })}
+              : t("pagesIn30Days", {
+                  pages: quranTarget,
+                  days: Math.ceil(QURAN_PAGES / effectivePagesPerDay),
+                })}
           </p>
 
           <Separator />
@@ -152,12 +217,12 @@ export default function GoalsPage() {
               </span>
             </div>
             <Progress
-              value={(totalQuranPages / quranTarget) * 100}
+              value={quranTarget > 0 ? (totalQuranPages / quranTarget) * 100 : 0}
               className="h-2"
             />
             <p className="text-xs text-muted-foreground">
               {t("avgPages", { count: avgQuranPages })}
-              {avgQuranPages >= quranGoal
+              {avgQuranPages >= effectivePagesPerDay
                 ? t("onTrack")
                 : t("keepPushing")}
             </p>

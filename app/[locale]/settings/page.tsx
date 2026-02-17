@@ -54,7 +54,7 @@ export default function SettingsPage() {
   const router = useRouter();
   const t = useTranslations("settings");
   const tc = useTranslations("common");
-  const { mode, setMode } = useMode();
+  const { setMode } = useMode();
   const { data: profile, isLoading } = useProfile();
   const { data: planner } = useCurrentPlanner();
   const { data: allProgress } = useAllProgress(planner?.id ?? null);

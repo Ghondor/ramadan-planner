@@ -97,6 +97,12 @@
   "goals": {
     "title": "Qëllimet & Zakonet",
     "quranGoal": "Qëllimi i Leximit të Kuranit",
+    "quranGoalType": "Lloji i qëllimit",
+    "khatmah1": "1 Hatm",
+    "khatmah2": "2 Hatm",
+    "khatmah3": "3 Hatm",
+    "custom": "Vetjak",
+    "pagesPerDayShort": "faqe/ditë",
     "dailyTarget": "Qëllimi ditor",
     "completeQuran": "Do ta përfundosh Kuranin në Ramazan!",
     "pagesIn30Days": "{pages} faqe në 30 ditë (~{days} ditë për të përfunduar)",

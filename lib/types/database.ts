@@ -17,8 +17,11 @@ export interface Profile {
   updated_at: string;
 }
 
+export type QuranGoalType = "1" | "2" | "3" | "custom";
+
 export interface PlannerGoals {
   quran_pages_per_day: number;
+  quran_goal_type?: QuranGoalType;
   habits: string[];
 }
 

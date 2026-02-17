@@ -36,7 +36,8 @@ import {
   Moon,
 } from "lucide-react";
 import { MainLogo } from "@/components/icon";
-import type { Mode, Madhab } from "@/lib/types/database";
+import type { Mode, Madhab, QuranGoalType } from "@/lib/types/database";
+import { QURAN_PAGES, pagesPerDayForKhatmah } from "@/lib/quran";
 
 const DEFAULT_HABITS = ["dhikr", "dua", "charity", "extra-sunnah", "reading"];
 
@@ -44,6 +45,7 @@ export default function OnboardingPage() {
   const router = useRouter();
   const t = useTranslations("onboarding");
   const tc = useTranslations("common");
+  const tGoals = useTranslations("goals");
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -58,6 +60,7 @@ export default function OnboardingPage() {
 
   // Step 2: Mode & goals
   const [mode, setMode] = useState<Mode>("classic");
+  const [quranGoalType, setQuranGoalType] = useState<QuranGoalType>("1");
   const [quranPagesPerDay, setQuranPagesPerDay] = useState(5);
   const [selectedHabits, setSelectedHabits] = useState<string[]>([
     "dhikr",
@@ -124,6 +127,11 @@ export default function OnboardingPage() {
         });
       }
 
+      const effectivePagesPerDay =
+        quranGoalType === "custom"
+          ? quranPagesPerDay
+          : pagesPerDayForKhatmah(quranGoalType as "1" | "2" | "3");
+
       // Create planner
       const hijriYear = parseInt(yearHijri);
       const dates = getRamadanDates(hijriYear);
@@ -134,7 +142,8 @@ export default function OnboardingPage() {
         start_date: dates.start,
         end_date: dates.end,
         goals: {
-          quran_pages_per_day: quranPagesPerDay,
+          quran_pages_per_day: effectivePagesPerDay,
+          quran_goal_type: quranGoalType,
           habits: selectedHabits,
         },
       });
@@ -295,21 +304,65 @@ export default function OnboardingPage() {
               {/* Quran goal */}
               <div className="space-y-3">
                 <Label>
-                  {t("dailyQuranGoal", { count: quranPagesPerDay })}
+                  {t("dailyQuranGoal", {
+                    count:
+                      quranGoalType === "custom"
+                        ? quranPagesPerDay
+                        : pagesPerDayForKhatmah(quranGoalType as "1" | "2" | "3"),
+                  })}
                 </Label>
-                <Slider
-                  value={[quranPagesPerDay]}
-                  onValueChange={([v]) => setQuranPagesPerDay(v)}
-                  min={1}
-                  max={20}
-                  step={1}
-                  className="w-full"
-                />
-                <p className="text-xs text-muted-foreground">
-                  {quranPagesPerDay >= 20
-                    ? t("completeQuran")
-                    : t("daysToComplete", { days: Math.ceil(604 / quranPagesPerDay) })}
-                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {(["1", "2", "3"] as const).map((k) => (
+                    <button
+                      key={k}
+                      type="button"
+                      onClick={() => setQuranGoalType(k)}
+                      className={`flex flex-col items-center gap-0.5 p-3 rounded-lg border-2 transition-all ${
+                        quranGoalType === k
+                          ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30"
+                          : "border-border hover:border-emerald-200"
+                      }`}
+                    >
+                      <span className="text-sm font-semibold">{tGoals(`khatmah${k}`)}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {pagesPerDayForKhatmah(k)} {tGoals("pagesPerDayShort")}
+                      </span>
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setQuranGoalType("custom")}
+                    className={`flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all ${
+                      quranGoalType === "custom"
+                        ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-950/30"
+                        : "border-border hover:border-emerald-200"
+                    }`}
+                  >
+                    <span className="text-sm font-semibold">{tGoals("custom")}</span>
+                  </button>
+                </div>
+                {quranGoalType === "custom" && (
+                  <>
+                    <Slider
+                      value={[quranPagesPerDay]}
+                      onValueChange={([v]) => setQuranPagesPerDay(v)}
+                      min={1}
+                      max={60}
+                      step={1}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {t("daysToComplete", {
+                        days: Math.ceil(QURAN_PAGES / quranPagesPerDay),
+                      })}
+                    </p>
+                  </>
+                )}
+                {quranGoalType !== "custom" && (
+                  <p className="text-xs text-muted-foreground">
+                    {t("completeQuran")}
+                  </p>
+                )}
               </div>
 
               {/* Habits */}
@@ -400,7 +453,11 @@ export default function OnboardingPage() {
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">{t("summaryQuranGoal")}</span>
                   <span className="font-medium">
-                    {tc("pagesPerDay", { count: quranPagesPerDay })}
+                    {quranGoalType === "custom"
+                      ? `${tGoals("custom")} (${tc("pagesPerDay", { count: quranPagesPerDay })})`
+                      : `${tGoals(`khatmah${quranGoalType}`)} (${tc("pagesPerDay", {
+                          count: pagesPerDayForKhatmah(quranGoalType as "1" | "2" | "3"),
+                        })})`}
                   </span>
                 </div>
                 <div className="flex justify-between items-start">

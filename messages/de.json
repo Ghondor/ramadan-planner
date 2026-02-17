@@ -97,6 +97,12 @@
   "goals": {
     "title": "Ziele & Gewohnheiten",
     "quranGoal": "Koran-Leseziel",
+    "quranGoalType": "Zieltyp",
+    "khatmah1": "1 Khatmah",
+    "khatmah2": "2 Khatmah",
+    "khatmah3": "3 Khatmah",
+    "custom": "Benutzerdefiniert",
+    "pagesPerDayShort": "Seiten/Tag",
     "dailyTarget": "Tägliches Ziel",
     "completeQuran": "Du schaffst den Koran im Ramadan!",
     "pagesIn30Days": "{pages} Seiten in 30 Tagen (~{days} Tage bis Abschluss)",

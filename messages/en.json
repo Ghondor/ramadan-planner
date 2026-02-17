@@ -97,6 +97,12 @@
   "goals": {
     "title": "Goals & Habits",
     "quranGoal": "Quran Reading Goal",
+    "quranGoalType": "Goal type",
+    "khatmah1": "1 Khatmah",
+    "khatmah2": "2 Khatmah",
+    "khatmah3": "3 Khatmah",
+    "custom": "Custom",
+    "pagesPerDayShort": "pages/day",
     "dailyTarget": "Daily target",
     "completeQuran": "You'll complete the Quran in Ramadan!",
     "pagesIn30Days": "{pages} pages in 30 days (~{days} days to finish)",
