@@ -53,8 +53,8 @@
   },
   "prayers": {
     "fajr": "Сабах",
-    "sunrise": "Изгрев",
-    "dhuhr": "Подне",
+    "sunrise": "Изгреј С.",
+    "dhuhr": "Пладне",
     "asr": "Икиндија",
     "maghrib": "Акшам",
     "isha": "Јација",
@@ -74,7 +74,7 @@
   },
   "daily": {
     "prayers": "Намази ({count}/6)",
-    "fastingToday": "Пост Денес",
+    "fastingToday": "Постиш ли?",
     "quranReading": "Читање Куран",
     "pagesReadToday": "Прочитани страници денес",
     "goalPages": "Цел: {count} страници/ден",

@@ -1,25 +1,5 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
-import { useParams } from "next/navigation";
-import { useRouter } from "@/i18n/navigation";
-import { useProfile } from "@/lib/hooks/use-profile";
-import { useCurrentPlanner } from "@/lib/hooks/use-planner";
-import { usePrayerTimes } from "@/lib/hooks/use-prayer-times";
-import {
-  useDailyProgress,
-  useUpsertDailyProgress,
-} from "@/lib/hooks/use-daily-progress";
-import { useMode } from "@/lib/context/mode-context";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Slider } from "@/components/ui/slider";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import {
   ArrowLeft,
   BookOpen,
@@ -29,8 +9,29 @@ import {
   Loader2,
   Utensils,
 } from "lucide-react";
-import { useTranslations, useLocale } from "next-intl";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useDailyProgress,
+  useUpsertDailyProgress,
+} from "@/lib/hooks/use-daily-progress";
+import { useLocale, useTranslations } from "next-intl";
+
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import type { SalahStatus } from "@/lib/types/database";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { useCurrentPlanner } from "@/lib/hooks/use-planner";
+import { useMode } from "@/lib/context/mode-context";
+import { useParams } from "next/navigation";
+import { usePrayerTimes } from "@/lib/hooks/use-prayer-times";
+import { useProfile } from "@/lib/hooks/use-profile";
+import { useRouter } from "@/i18n/navigation";
 
 const SALAH_NAMES: (keyof SalahStatus)[] = [
   "fajr",
@@ -51,11 +52,11 @@ export default function DailyViewClient() {
   const { data: prayerData, isLoading: prayerLoading } = usePrayerTimes(
     profile?.location ?? null,
     profile?.madhab,
-    new Date(dateStr)
+    new Date(dateStr),
   );
   const { data: progress, isLoading: progressLoading } = useDailyProgress(
     planner?.id ?? null,
-    dateStr
+    dateStr,
   );
   const upsertProgress = useUpsertDailyProgress();
   const t = useTranslations("daily");
@@ -119,9 +120,19 @@ export default function DailyViewClient() {
           setSaved(true);
           setTimeout(() => setSaved(false), 2000);
         },
-      }
+      },
     );
-  }, [planner, profile, dateStr, salah, quranPages, fasting, habits, journal, upsertProgress]);
+  }, [
+    planner,
+    profile,
+    dateStr,
+    salah,
+    quranPages,
+    fasting,
+    habits,
+    journal,
+    upsertProgress,
+  ]);
 
   const scheduleAutoSave = useCallback(() => {
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
@@ -208,7 +219,9 @@ export default function DailyViewClient() {
                 />
                 <span
                   className={`text-sm ${
-                    salah[prayer] ? "font-medium line-through text-muted-foreground" : ""
+                    salah[prayer]
+                      ? "font-medium line-through text-muted-foreground"
+                      : ""
                   }`}
                 >
                   {tp(prayer)}
@@ -233,7 +246,7 @@ export default function DailyViewClient() {
 
       {/* Fasting */}
       <Card>
-        <CardContent className="pt-4">
+        <CardContent className="pt-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Utensils className="h-4 w-4" />
@@ -274,7 +287,9 @@ export default function DailyViewClient() {
             step={1}
           />
           <p className="text-xs text-muted-foreground">
-            {t("goalPages", { count: planner?.goals?.quran_pages_per_day ?? 5 })}
+            {t("goalPages", {
+              count: planner?.goals?.quran_pages_per_day ?? 5,
+            })}
           </p>
         </CardContent>
       </Card>
