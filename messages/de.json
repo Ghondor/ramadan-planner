@@ -192,7 +192,10 @@
     "beginRamadan": "Ramadan beginnen!",
     "creating": "Wird erstellt...",
     "somethingWrong": "Etwas ist schiefgelaufen",
-    "searchCity": "Stadt suchen..."
+    "searchCity": "Stadt suchen...",
+    "yourName": "Dein Name",
+    "namePlaceholder": "Gib deinen Namen ein",
+    "summaryName": "Name"
   },
   "auth": {
     "login": "Anmelden",
@@ -228,7 +231,8 @@
     "unspecifiedError": "Ein unbekannter Fehler ist aufgetreten.",
     "hey": "Hallo, {email}!",
     "signIn": "Anmelden",
-    "logout": "Abmelden"
+    "logout": "Abmelden",
+    "settings": "Einstellungen"
   },
   "countdown": {
     "ramadanMubarak": "Ramadan Mubarak!",

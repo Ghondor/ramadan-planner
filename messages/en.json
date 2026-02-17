@@ -192,7 +192,10 @@
     "beginRamadan": "Begin Ramadan!",
     "creating": "Creating...",
     "somethingWrong": "Something went wrong",
-    "searchCity": "Search for a city..."
+    "searchCity": "Search for a city...",
+    "yourName": "Your Name",
+    "namePlaceholder": "Enter your name",
+    "summaryName": "Name"
   },
   "auth": {
     "login": "Login",
@@ -228,7 +231,8 @@
     "unspecifiedError": "An unspecified error occurred.",
     "hey": "Hey, {email}!",
     "signIn": "Sign in",
-    "logout": "Logout"
+    "logout": "Logout",
+    "settings": "Settings"
   },
   "countdown": {
     "ramadanMubarak": "Ramadan Mubarak!",

@@ -192,7 +192,10 @@
     "beginRamadan": "Fillo Ramazanin!",
     "creating": "Duke krijuar...",
     "somethingWrong": "Diçka shkoi keq",
-    "searchCity": "Kërko një qytet..."
+    "searchCity": "Kërko një qytet...",
+    "yourName": "Emri Yt",
+    "namePlaceholder": "Shkruaj emrin tënd",
+    "summaryName": "Emri"
   },
   "auth": {
     "login": "Hyr",
@@ -228,7 +231,8 @@
     "unspecifiedError": "Ndodhi një gabim i paspecifikuar.",
     "hey": "Përshëndetje, {email}!",
     "signIn": "Hyr",
-    "logout": "Dil"
+    "logout": "Dil",
+    "settings": "Cilësimet"
   },
   "countdown": {
     "ramadanMubarak": "Ramazan Mubarak!",

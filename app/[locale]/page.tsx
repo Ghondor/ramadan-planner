@@ -1,6 +1,5 @@
 import { AuthButton } from "@/components/auth-button";
 import { ThemeSwitcher } from "@/components/theme-switcher";
-import { LanguageSwitcher } from "@/components/language-switcher";
 import { Countdown } from "@/components/countdown";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,13 +35,9 @@ export default async function Home() {
             <Logo className="h-6 w-6" />
             {tc("brand")}
           </Link>
-          <div className="flex items-center gap-2">
-            <LanguageSwitcher />
-            <ThemeSwitcher />
-            <Suspense>
-              <AuthButton />
-            </Suspense>
-          </div>
+          <Suspense>
+            <AuthButton />
+          </Suspense>
         </div>
       </nav>
 

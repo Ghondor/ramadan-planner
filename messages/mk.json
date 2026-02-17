@@ -192,7 +192,10 @@
     "beginRamadan": "Започни Рамазан!",
     "creating": "Се креира...",
     "somethingWrong": "Нешто тргна наопаку",
-    "searchCity": "Пребарај град..."
+    "searchCity": "Пребарај град...",
+    "yourName": "Твоето Име",
+    "namePlaceholder": "Внеси го твоето име",
+    "summaryName": "Име"
   },
   "auth": {
     "login": "Најава",
@@ -228,7 +231,8 @@
     "unspecifiedError": "Настана неспецифицирана грешка.",
     "hey": "Здраво, {email}!",
     "signIn": "Најави се",
-    "logout": "Одјави се"
+    "logout": "Одјави се",
+    "settings": "Поставки"
   },
   "countdown": {
     "ramadanMubarak": "Рамазан Мубарек!",

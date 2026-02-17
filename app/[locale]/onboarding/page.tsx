@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CitySearch } from "@/components/city-search";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -47,7 +48,8 @@ export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Step 1: Location & settings
+  // Step 1: Name, location & settings
+  const [displayName, setDisplayName] = useState("");
   const [locationName, setLocationName] = useState("");
   const [lat, setLat] = useState("");
   const [lng, setLng] = useState("");
@@ -87,6 +89,13 @@ export default function OnboardingPage() {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
+
+      // Save display name to auth metadata
+      if (displayName.trim()) {
+        await supabase.auth.updateUser({
+          data: { display_name: displayName.trim() },
+        });
+      }
 
       const location = {
         lat: parseFloat(lat),
@@ -166,6 +175,14 @@ export default function OnboardingPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div className="grid gap-2">
+                <Label>{t("yourName")}</Label>
+                <Input
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder={t("namePlaceholder")}
+                />
+              </div>
               <div className="grid gap-2">
                 <Label>{t("city")}</Label>
                 <CitySearch
@@ -351,6 +368,12 @@ export default function OnboardingPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="rounded-xl bg-muted/50 p-4 space-y-3 text-sm">
+                {displayName.trim() && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">{t("summaryName")}</span>
+                    <span className="font-medium">{displayName.trim()}</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">{t("summaryLocation")}</span>
                   <span className="font-medium">{locationName}</span>
