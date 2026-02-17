@@ -132,6 +132,8 @@
   "settings": {
     "title": "Cilësimet",
     "profile": "Profili",
+    "yourName": "Emri Yt",
+    "namePlaceholder": "Shkruaj emrin tënd",
     "experienceMode": "Mënyra e Përvojës",
     "location": "Vendndodhja",
     "cityName": "Emri i qytetit",

@@ -132,6 +132,8 @@
   "settings": {
     "title": "Einstellungen",
     "profile": "Profil",
+    "yourName": "Dein Name",
+    "namePlaceholder": "Gib deinen Namen ein",
     "experienceMode": "Erlebnismodus",
     "location": "Standort",
     "cityName": "Stadtname",

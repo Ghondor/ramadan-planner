@@ -60,6 +60,7 @@ export default function SettingsPage() {
   const { data: allProgress } = useAllProgress(planner?.id ?? null);
   const updateProfile = useUpdateProfile();
 
+  const [displayName, setDisplayName] = useState("");
   const [locationName, setLocationName] = useState("");
   const [lat, setLat] = useState("");
   const [lng, setLng] = useState("");
@@ -68,6 +69,17 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user?.user_metadata?.display_name) {
+        setDisplayName(String(user.user_metadata.display_name));
+      }
+    };
+    loadUser();
+  }, []);
 
   useEffect(() => {
     if (profile) {
@@ -80,6 +92,12 @@ export default function SettingsPage() {
   }, [profile]);
 
   const handleSave = async () => {
+    const supabase = createClient();
+    if (displayName.trim()) {
+      await supabase.auth.updateUser({
+        data: { display_name: displayName.trim() },
+      });
+    }
     const updates = {
       mode: selectedMode,
       location: {
@@ -159,6 +177,18 @@ export default function SettingsPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Display name */}
+          <div className="space-y-2">
+            <Label>{t("yourName")}</Label>
+            <Input
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder={t("namePlaceholder")}
+            />
+          </div>
+
+          <Separator />
+
           {/* Mode */}
           <div className="space-y-2">
             <Label>{t("experienceMode")}</Label>

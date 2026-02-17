@@ -132,6 +132,8 @@
   "settings": {
     "title": "Поставки",
     "profile": "Профил",
+    "yourName": "Твоето Име",
+    "namePlaceholder": "Внеси го твоето име",
     "experienceMode": "Режим на Искуство",
     "location": "Локација",
     "cityName": "Име на град",
