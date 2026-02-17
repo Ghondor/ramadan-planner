@@ -14,10 +14,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/icon";
 import {
   BookOpen,
   ChevronRight,
-  Moon,
   Sparkles,
   Star,
 } from "lucide-react";
@@ -105,7 +105,7 @@ export default function DashboardClient() {
   if (!planner) {
     return (
       <div className="p-4 max-w-lg mx-auto text-center space-y-4 pt-20">
-        <Moon className="h-12 w-12 mx-auto text-muted-foreground" />
+        <Logo className="h-12 w-12 mx-auto" />
         <h2 className="text-xl font-bold">{tc("noPlanner")}</h2>
         <p className="text-muted-foreground">{t("noPlanner")}</p>
         <Button asChild>

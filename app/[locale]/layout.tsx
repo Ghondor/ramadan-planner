@@ -1,13 +1,13 @@
-import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
-import { notFound } from "next/navigation";
-import { hasLocale } from "next-intl";
-import { routing } from "@/i18n/routing";
-import { ThemeProvider } from "next-themes";
-import { QueryProvider } from "@/components/providers/query-provider";
-import { ModeProvider } from "@/lib/context/mode-context";
-import { Toaster } from "@/components/ui/sonner";
 import { Geist } from "next/font/google";
+import { ModeProvider } from "@/lib/context/mode-context";
+import { NextIntlClientProvider } from "next-intl";
+import { QueryProvider } from "@/components/providers/query-provider";
+import { ThemeProvider } from "next-themes";
+import { Toaster } from "@/components/ui/sonner";
+import { getMessages } from "next-intl/server";
+import { hasLocale } from "next-intl";
+import { notFound } from "next/navigation";
+import { routing } from "@/i18n/routing";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

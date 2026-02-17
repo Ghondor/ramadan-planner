@@ -10,7 +10,6 @@ export const metadata: Metadata = {
   title: "Ramadan Planner",
   description:
     "Track prayers, Quran reading, and daily habits throughout the blessed month of Ramadan",
-  manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

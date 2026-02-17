@@ -11,8 +11,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
-import { Moon, Sparkles, BookOpen, Star } from "lucide-react";
+import { Sparkles, BookOpen, Star, Moon } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { Logo, MainLogo } from "@/components/icon";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 
@@ -32,7 +33,7 @@ export default async function Home() {
       <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
         <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
           <Link href="/" className="flex items-center gap-2 font-semibold">
-            <Moon className="h-5 w-5" />
+            <Logo className="h-6 w-6" />
             {tc("brand")}
           </Link>
           <div className="flex items-center gap-2">
@@ -49,9 +50,7 @@ export default async function Home() {
       <section className="flex-1 flex flex-col items-center justify-center px-4 py-12 sm:py-20">
         <div className="max-w-2xl mx-auto text-center space-y-8">
           <div className="flex justify-center">
-            <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center shadow-lg">
-              <Moon className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
-            </div>
+            <MainLogo width={80} height={80} className="sm:w-[100px] sm:h-[100px]" />
           </div>
 
           <div className="space-y-3">

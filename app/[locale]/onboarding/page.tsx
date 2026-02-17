@@ -34,6 +34,7 @@ import {
   Rocket,
   Moon,
 } from "lucide-react";
+import { MainLogo } from "@/components/icon";
 import type { Mode, Madhab } from "@/lib/types/database";
 
 const DEFAULT_HABITS = ["dhikr", "dua", "charity", "extra-sunnah", "reading"];
@@ -140,6 +141,9 @@ export default function OnboardingPage() {
   return (
     <main className="min-h-screen flex items-center justify-center p-4 sm:p-6">
       <div className="w-full max-w-lg space-y-6">
+        <div className="flex justify-center">
+          <MainLogo width={64} height={64} />
+        </div>
         {/* Progress */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm text-muted-foreground">
